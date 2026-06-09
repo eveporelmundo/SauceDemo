@@ -23,6 +23,8 @@ it.only('Compra completa con un producto', () => {
     
     // Confirmar pedido
     cy.confirmarPedido()
+
+    cy.logOut()
 })
 
 
