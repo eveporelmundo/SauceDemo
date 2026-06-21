@@ -1,12 +1,13 @@
+![SauceDemo Cypress Test Suite Banner](./docs/iaautomationcypress.png.png)
 # SauceDemo Cypress Test Suite
 
 ## Project Overview
 
 This project is an end-to-end test automation suite built with **Cypress** for the demo e-commerce website [SauceDemo](https://www.saucedemo.com/).
 
-The goal of this project is to demonstrate how a QA process can move from functional analysis to test case design and automated execution, covering the most critical user flows of an online shopping application.
+The goal of this project is to demonstrate how a QA process can move from functional analysis to automated test execution, covering the most critical user flows of an online shopping application.
 
-This repository is part of my QA Automation portfolio and focuses on practical testing skills such as test planning, risk-based prioritization, negative testing, bug detection, and maintainable Cypress automation.
+This repository is part of my QA Automation portfolio and focuses on practical testing skills such as functional testing, negative testing, bug prevention, maintainable test structure and automation using Cypress.
 
 ---
 
@@ -15,14 +16,14 @@ This repository is part of my QA Automation portfolio and focuses on practical t
 The objective of this project is to validate the main functionalities of a demo e-commerce platform, including:
 
 * User login
-* Product listing
+* Product inventory
 * Shopping cart
 * Checkout process
 * Form validations
 * Logout flow
 * Negative scenarios
 
-The test suite was designed to cover both happy paths and critical failure scenarios that could affect the user experience or business flow.
+The test suite covers both happy paths and critical failure scenarios that could affect the user experience or the purchase flow.
 
 ---
 
@@ -42,8 +43,7 @@ The test suite was designed to cover both happy paths and critical failure scena
 * Node.js
 * Git
 * GitHub
-* GitHub Actions
-* Mochawesome Reporter
+* Page Object Model
 
 ---
 
@@ -56,53 +56,66 @@ The automated tests cover the following areas:
 * Login with valid credentials
 * Login with invalid credentials
 * Login with locked out user
-* Product inventory visibility
+* Product page validation
 * Add product to cart
+* Add multiple products to cart
 * Remove product from cart
 * Cart badge validation
+* Cart page validation
+* Continue shopping from cart
+* Go to checkout from cart
 * Checkout form validation
 * Complete checkout flow
 * Logout flow
 
-### Out of scope
+### Out of scope for this version
 
-The following areas are not covered in this version:
+The following areas are not covered in the current version:
 
-* Performance testing
 * API testing
+* Performance testing
 * Visual regression testing
-* Cross-browser testing beyond Cypress default configuration
 * Accessibility testing
+* Cross-browser testing
+* Mochawesome reports
+* GitHub Actions CI pipeline
 
 ---
 
 ## Test Scenarios Automated
 
-| ID     | Test Scenario                           | Priority | Type     |
-| ------ | --------------------------------------- | -------- | -------- |
-| TC-001 | Login with valid user                   | High     | Positive |
-| TC-002 | Login with invalid credentials          | High     | Negative |
-| TC-003 | Login with locked out user              | High     | Negative |
-| TC-004 | Validate product inventory is displayed | High     | Positive |
-| TC-005 | Add one product to the cart             | High     | Positive |
-| TC-006 | Remove one product from the cart        | Medium   | Positive |
-| TC-007 | Validate cart badge updates correctly   | High     | Positive |
-| TC-008 | Complete checkout with valid data       | High     | Positive |
-| TC-009 | Validate checkout form required fields  | High     | Negative |
-| TC-010 | Logout successfully                     | Medium   | Positive |
+| ID     | Test Scenario                      | Priority | Type     |
+| ------ | ---------------------------------- | -------- | -------- |
+| TC-001 | Login with valid credentials       | High     | Positive |
+| TC-002 | Login with invalid credentials     | High     | Negative |
+| TC-003 | Login with locked out user         | High     | Negative |
+| TC-004 | Validate product inventory page    | High     | Positive |
+| TC-005 | Add one product to the cart        | High     | Positive |
+| TC-006 | Add two products to the cart       | High     | Positive |
+| TC-007 | Remove one product from the cart   | Medium   | Positive |
+| TC-008 | Validate cart badge quantity       | High     | Positive |
+| TC-009 | Validate product added to cart     | High     | Positive |
+| TC-010 | Remove product from cart page      | Medium   | Positive |
+| TC-011 | Continue shopping from cart        | Medium   | Positive |
+| TC-012 | Navigate from cart to checkout     | High     | Positive |
+| TC-013 | Complete checkout with valid data  | High     | Positive |
+| TC-014 | Validate missing first name error  | High     | Negative |
+| TC-015 | Validate missing last name error   | High     | Negative |
+| TC-016 | Validate missing postal code error | High     | Negative |
+| TC-017 | Logout successfully                | Medium   | Positive |
 
 ---
 
 ## Risk-Based Testing Approach
 
-The test cases were prioritized based on the impact each functionality has on the user journey and the business flow.
+The test cases were prioritized based on the impact each functionality has on the user journey and business flow.
 
 The highest priority was assigned to:
 
-1. Login, because users cannot access the application without authentication.
-2. Cart functionality, because it directly affects the shopping experience.
-3. Checkout flow, because it represents the final conversion step.
-4. Form validations, because missing or incorrect validation can create incomplete orders or poor user experience.
+1. **Login**, because users cannot access the application without authentication.
+2. **Inventory and cart**, because they directly affect the shopping experience.
+3. **Checkout**, because it represents the final conversion step.
+4. **Form validations**, because missing or incorrect validation can create incomplete orders or poor user experience.
 
 ---
 
@@ -118,9 +131,6 @@ saucedemo-cypress-tests/
 │   │   ├── cart.cy.js
 │   │   └── checkout.cy.js
 │   │
-│   ├── fixtures/
-│   │   └── users.json
-│   │
 │   ├── pages/
 │   │   ├── LoginPage.js
 │   │   ├── InventoryPage.js
@@ -133,11 +143,32 @@ saucedemo-cypress-tests/
 │
 ├── cypress.config.js
 ├── package.json
-├── README.md
-└── .github/
-    └── workflows/
-        └── cypress.yml
+└── README.md
 ```
+
+---
+
+## Page Object Model
+
+This project uses a simple **Page Object Model** structure to keep selectors and reusable actions separated from the test cases.
+
+This improves:
+
+* Readability
+* Maintainability
+* Reusability
+* Test organization
+
+Example:
+
+```js
+loginPage.login('standard_user', 'secret_sauce')
+inventoryPage.addBackpackToCart()
+cartPage.goToCheckout()
+checkoutPage.fillCheckoutForm('Test', 'Data', '1000')
+```
+
+Instead of repeating selectors and Cypress commands across different test files, common actions are grouped inside page files.
 
 ---
 
@@ -146,7 +177,7 @@ saucedemo-cypress-tests/
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/saucedemo-cypress-tests.git
+git clone https://github.com/eveporelmundo/saucedemo-cypress-tests.git
 ```
 
 ### 2. Install dependencies
@@ -167,51 +198,17 @@ npx cypress open
 npx cypress run
 ```
 
-### 5. Run tests with Mochawesome report
-
-```bash
-npx cypress run --reporter mochawesome
-```
-
----
-
-## GitHub Actions
-
-This project includes a GitHub Actions workflow to run the Cypress test suite automatically on every push.
-
-The purpose of the pipeline is to simulate a real QA automation workflow where tests are executed continuously to detect regressions early.
-
----
-
-## Reports
-
-Test execution reports are generated using **Mochawesome**.
-
-The report includes:
-
-* Total tests executed
-* Passed tests
-* Failed tests
-* Execution time
-* Screenshots for failed tests, when applicable
-
-Add screenshot here:
-
-```markdown
-![Mochawesome Report](./docs/mochawesome-report.png)
-```
-
 ---
 
 ## QA Decisions
 
 Some important decisions made during this project:
 
-* I separated the test cases by feature to keep the suite organized and maintainable.
-* I used Page Object Model to avoid duplicated selectors and improve readability.
-* I prioritized the most critical business flows first: login, cart and checkout.
+* I separated the test cases by feature to keep the suite organized.
+* I implemented Page Object Model to avoid duplicated selectors and improve maintainability.
+* I prioritized critical business flows first: login, cart and checkout.
 * I included negative scenarios to validate how the application handles errors.
-* I added CI execution with GitHub Actions to show how automated tests can run continuously.
+* I kept the project structure simple and readable for portfolio and review purposes.
 
 ---
 
@@ -222,10 +219,10 @@ Through this project, I practiced:
 * Writing Cypress end-to-end tests
 * Designing positive and negative test scenarios
 * Structuring a test automation project
-* Using reusable page objects
-* Running tests locally and in CI
-* Creating readable documentation for a QA portfolio
-* Thinking about test prioritization based on user and business risk
+* Using Page Object Model
+* Organizing tests by feature
+* Validating user flows from login to checkout
+* Creating documentation for a QA Automation portfolio
 
 ---
 
@@ -233,14 +230,14 @@ Through this project, I practiced:
 
 Future improvements for this project:
 
-* Add more edge cases for checkout validation
-* Add API testing if endpoints are available
+* Add Mochawesome HTML reports
+* Add GitHub Actions to run tests automatically on every push
+* Add fixtures for test data management
+* Add API testing
 * Add accessibility checks
 * Add visual testing
-* Improve test data management
 * Add tags by test type or priority
-* Expand GitHub Actions configuration
-* Add a test case matrix in Google Sheets or Markdown
+* Add a test case matrix in Markdown or Google Sheets
 
 ---
 
@@ -248,6 +245,6 @@ Future improvements for this project:
 
 This project demonstrates my ability to design and automate functional test cases for a web application using Cypress.
 
-It shows practical QA skills including test planning, automation, reporting, maintainable structure, and continuous integration.
+It shows practical QA skills including test planning, automation, maintainable structure, negative testing and end-to-end validation.
 
 This project is aligned with QA Manual, QA Automation Junior, QA Analyst and Application Support roles.
