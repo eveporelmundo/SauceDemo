@@ -1,4 +1,4 @@
-![SauceDemo Cypress Test Suite Banner](./docs/iaautomationcypress.png.png)
+![SauceDemo Cypress Test Suite Banner](./docs/iaautomationcypress.png)
 # SauceDemo Cypress Test Suite
 
 ## Project Overview
