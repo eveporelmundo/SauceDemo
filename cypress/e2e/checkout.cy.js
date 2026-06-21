@@ -1,47 +1,45 @@
-describe('Check out - SauceDemo', () => {
-    beforeEach(() => {
-        cy.visit('https://www.saucedemo.com/')
+import loginPage from '../pages/LoginPage'
+import inventoryPage from '../pages/InventoryPage'
+import cartPage from '../pages/CartPage'
+import checkoutPage from '../pages/CheckoutPage'
 
-        cy.get('[data-test="username"]').type('standard_user')
+describe('Checkout tests - SauceDemo', () => {
+beforeEach(() => {
+loginPage.visit()
+loginPage.login('standard_user', 'secret_sauce')
+inventoryPage.addBackpackToCart()
+inventoryPage.openCart()
+cartPage.goToCheckout()
+})
 
-        cy.get('[data-test="password"]').type('secret_sauce')
+it('should complete checkout successfully', () => {
+checkoutPage.fillCheckoutForm('Evelyn', 'Grau', '1000')
+checkoutPage.continueCheckout()
 
-        cy.get('[data-test="login-button"]').click()
+checkoutPage.verifyOverviewPage()
+checkoutPage.finishCheckout()
 
-        cy.url().should('include', '/inventory.html') 
+checkoutPage.verifyOrderComplete()
+})
 
-        cy.get('[data-test="add-to-cart-sauce-labs-backpack"]')
-        .click()
+it('should show error when first name is missing', () => {
+checkoutPage.continueCheckout()
 
-        cy.get('[data-test="shopping-cart-link"]')
-        .click()
-    })
+checkoutPage.verifyErrorMessage('First Name is required')
+})
 
-    it('TC 13 - Procedes con el check out de un producto', () =>{
-        cy.get('[data-test="checkout"]').click()
+it('should show error when last name is missing', () => {
+checkoutPage.fillFirstName('Evelyn')
+checkoutPage.continueCheckout()
 
-        cy.get('[data-test="firstName"]').type('Juan')
-        cy.get('[data-test="lastName"]').type('Perez')
-        cy.get('[data-test="postalCode"]').type('5000')
+checkoutPage.verifyErrorMessage('Last Name is required')
+})
 
-        cy.get('[data-test="continue"]').click()
-        cy.get('[data-test="finish"]').click()
+it('should show error when postal code is missing', () => {
+checkoutPage.fillFirstName('Evelyn')
+checkoutPage.fillLastName('Grau')
+checkoutPage.continueCheckout()
 
-        cy.url().should ('include', '/checkout-complete.html')
-
-        cy.get('[data-test="complete-header"]')
-        .should('be.visible')
-        .and('contain', 'Thank you for your order!')
-    })
-
-    it('TC 14 - Check out con campos vacios', ()=>{
-        cy.get('[data-test="checkout"]').click()
-
-        cy.get('[data-test="continue"]').click()
-        cy.get('[data-test="error"]')
-        .should('be.visible')
-        .and('contain', 'Error: First Name is required')
-
-    })
-
+checkoutPage.verifyErrorMessage('Postal Code is required')
+})
 })
